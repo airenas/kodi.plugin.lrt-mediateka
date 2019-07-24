@@ -90,24 +90,29 @@ def get_videos(url):
     soup = BeautifulSoup(html, "html.parser")
     divs = soup.find_all('div', attrs={'class': 'media-block'})
     xbmc.log('Div size ' + str(len(divs)), level=xbmc.LOGNOTICE)
-    arr = []
+    res = []
+    uniqRes = set()
     for d in divs:
         # xbmc.log('Div: ' + str(d), level=xbmc.LOGNOTICE)
-        if not skip(d):
-            pd = d.find_parent('div')
-            m = pd.find('h3', attrs={'class': 'news__title'})
-            a = m.find('a')
+        parentDiv = d.find_parent('div')
+        m = parentDiv.find('h3', attrs={'class': 'news__title'})
+        link = m.find('a')
+        ref = link.get('href')
+        if (not ref in uniqRes) and (not skip(d)):
             r = {}
-            dt = extract_date(pd)
+            
+            dt = extract_date(parentDiv)
             if dt:
                 r["name"] = dt + ' ' + m.get_text()
             else:
                 r["name"] = m.get_text()
-            r["url"] = a.get('href')
-            r["genre"] = extract_genre(pd)
+            
+            r["url"] = ref
+            r["genre"] = extract_genre(parentDiv)
             r["thumb"] = extract_image(d)
-            arr.append(r)
-    return arr
+            res.append(r)
+            uniqRes.add(ref)
+    return res
 
 ############################################################################
 
