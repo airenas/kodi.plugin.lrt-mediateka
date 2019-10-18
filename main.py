@@ -160,13 +160,15 @@ def list_videos(url):
 def get_play_url(url):
     data = json.load(urllib2.urlopen(
         'https://www.lrt.lt/servisai/stream_url/vod/media_info/?url=' + url))
-    return data["url"]
+    return data["playlist_item"]["file"]
 
 ############################################################################
 
 
 def play_video(url):
+    xbmc.log("Play " + url, level=xbmc.LOGNOTICE)
     play_url = get_play_url(url)
+    xbmc.log("Got play URL " + play_url, level=xbmc.LOGNOTICE)
     play_item = xbmcgui.ListItem(path=play_url)
     xbmcplugin.setResolvedUrl(_handle, True, listitem=play_item)
 
