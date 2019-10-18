@@ -160,7 +160,7 @@ def list_videos(url):
 def get_play_url(url):
     data = json.load(urllib2.urlopen(
         'https://www.lrt.lt/servisai/stream_url/vod/media_info/?url=' + url))
-    return data["playlist_item"]["file"]
+    return data["url"]
 
 ############################################################################
 
