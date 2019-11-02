@@ -32,11 +32,24 @@ Categories = [{'name': 'Panorama',
               {'name': 'Filmai vasaros vakarams',
                'thumb': 'https://www.lrt.lt/img/2019/07/14/471571-178733-615x345.jpg',
                'url': 'https://www.lrt.lt/tema/filmai-vasaros-vakarams',
-               'genre': 'Filmai vasaros vakarams'}]
+               'genre': 'Filmai vasaros vakarams'},
+              {'name': 'Tema Filmai',
+               'thumb': 'https://www.lrt.lt/img/2019/11/02/542178-778716-1287x836.jpg',
+               'url': 'https://www.lrt.lt/mediateka/tema/filmai',
+               'genre': 'Filmai'},
+              {'name': 'Klauskite daktaro',
+               'thumb': 'https://www.lrt.lt/img/2019/10/31/538472-544-1287x836.jpg',
+               'url': 'https://www.lrt.lt/mediateka/video/klauskite-daktaro',
+               'genre': 'Klauskite daktaro'},
+              {'name': 'Beatos virtuvė',
+               'thumb': 'https://www.lrt.lt/img/2019/11/01/542088-934580-1287x836.jpg',
+               'url': 'https://www.lrt.lt/mediateka/video/beatos-virtuve',
+               'genre': 'Beatos virtuvė'}]
 
 
 def get_url(**kwargs):
     return '{0}?{1}'.format(_url, urlencode(kwargs))
+
 
 ############################################################################
 
@@ -49,6 +62,8 @@ def extract_image(p_html):
         return 'https://www.lrt.lt' + img.get('data-src')
     xbmc.log('No image ', level=xbmc.LOGNOTICE)
     return ''
+
+
 ############################################################################
 
 
@@ -57,6 +72,7 @@ def extract_genre(p_html):
     if m:
         return m.get_text()
     return ''
+
 
 ############################################################################
 
@@ -68,6 +84,8 @@ def extract_date(p_html):
         return m.get_text()
     xbmc.log('No date ', level=xbmc.LOGNOTICE)
     return None
+
+
 ############################################################################
 
 
@@ -76,6 +94,7 @@ def skip(p_html):
     if div:
         return True
     return False
+
 
 ############################################################################
 
@@ -100,19 +119,20 @@ def get_videos(url):
         ref = link.get('href')
         if (not ref in uniqRes) and (not skip(d)):
             r = {}
-            
+
             dt = extract_date(parentDiv)
             if dt:
                 r["name"] = dt + ' ' + m.get_text()
             else:
                 r["name"] = m.get_text()
-            
+
             r["url"] = ref
             r["genre"] = extract_genre(parentDiv)
             r["thumb"] = extract_image(d)
             res.append(r)
             uniqRes.add(ref)
     return res
+
 
 ############################################################################
 
@@ -154,6 +174,7 @@ def list_videos(url):
     xbmcplugin.addSortMethod(_handle, xbmcplugin.SORT_METHOD_LABEL_IGNORE_THE)
     xbmcplugin.endOfDirectory(_handle)
 
+
 ############################################################################
 
 
@@ -161,6 +182,7 @@ def get_play_url(url):
     data = json.load(urllib2.urlopen(
         'https://www.lrt.lt/servisai/stream_url/vod/media_info/?url=' + url))
     return data["playlist_item"]["file"]
+
 
 ############################################################################
 
@@ -171,6 +193,7 @@ def play_video(url):
     xbmc.log("Got play URL " + play_url, level=xbmc.LOGNOTICE)
     play_item = xbmcgui.ListItem(path=play_url)
     xbmcplugin.setResolvedUrl(_handle, True, listitem=play_item)
+
 
 ############################################################################
 
