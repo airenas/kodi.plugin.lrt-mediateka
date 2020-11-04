@@ -1,23 +1,23 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <addon id="kodi.plugin.lrt-mediateka"
-version="0.2.0"
-name="LRT Mediateka (Unofficial) Plugin"
-provider-name="Airenas">
-<requires>
-  <import addon="xbmc.python" version="2.25.0"/>
-  <import addon="script.module.beautifulsoup4" version="4.5.3"/>
-</requires>
-<extension point="xbmc.python.pluginsource" library="main.py">
-  <provides>video</provides>
-</extension>
-<extension point="xbmc.addon.metadata">
-  <summary lang="en">LRT Mediateka Plugin (Unofficial)</summary>
-  <description lang="en_GB">LRT Mediateka Plugin.</description>
-  <disclaimer lang="en_GB">LRT Mediateka Plugin.</disclaimer>
-  <assets>
-    <icon>icon.png</icon>
-    <fanart>fanart.jpg</fanart>
-  </assets>
-  <news>Add more categories</news>
-</extension>
+       version="0.2.2"
+       name="LRT Mediateka (Unofficial) Plugin"
+       provider-name="Airenas">
+    <requires>
+        <import addon="xbmc.python" version="2.25.0"/>
+        <import addon="script.module.beautifulsoup4" version="4.5.3"/>
+    </requires>
+    <extension point="xbmc.python.pluginsource" library="main.py">
+        <provides>video</provides>
+    </extension>
+    <extension point="xbmc.addon.metadata">
+        <summary lang="en">LRT Mediateka Plugin (Unofficial)</summary>
+        <description lang="en_GB">LRT Mediateka Plugin.</description>
+        <disclaimer lang="en_GB">LRT Mediateka Plugin.</disclaimer>
+        <assets>
+            <icon>icon.png</icon>
+            <fanart>fanart.jpg</fanart>
+        </assets>
+        <news>Add more categories</news>
+    </extension>
 </addon>
