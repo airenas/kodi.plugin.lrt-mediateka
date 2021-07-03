@@ -12,5 +12,5 @@ Sukonfigūruotos tik kelios statinės kategorijos: Panorama, Sportas, Filmai.
 ## Licenzijos
 Ikona ir kiti paveikslėliai yra [LRT](http://www.lrt.lt) nuosavybė!
 
-Copyright © 2019, [Airenas Vaičiūnas](https://github.com/airenas).
+Copyright © 2021, [Airenas Vaičiūnas](https://github.com/airenas).
 
