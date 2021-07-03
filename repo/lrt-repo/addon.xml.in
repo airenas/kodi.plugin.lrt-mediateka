@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<addon id="lrt.repo" name="LRT.lt addon repo" version="${repo_version}" provider-name="Airenas">
+    <extension point="xbmc.addon.repository" name="LRT.lt addon repo">
+        <dir>
+            <info compressed="false">${repo_url}/addons.xml</info>
+            <checksum>${repo_url}/addons.xml.md5</checksum>
+            <datadir zip="true">${repo_url}/</datadir>
+        </dir>
+    </extension>
+    <extension point="xbmc.addon.metadata">
+        <summary>LRT.lt addon repo</summary>
+        <description>LRT.lt addon repo</description>
+        <disclaimer></disclaimer>
+        <platform>all</platform>
+        <assets>
+            <icon>icon.png</icon>
+            <fanart>fanart.jpg</fanart>
+        </assets>
+    </extension>
+</addon>
