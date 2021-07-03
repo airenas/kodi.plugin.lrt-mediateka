@@ -1,3 +1,4 @@
 commit_count=$(shell git rev-list --count HEAD)
 version?=0.3.$(commit_count)
 name?=kodi.plugin.lrt-mediateka
+port?=10003
