@@ -2,3 +2,4 @@
 addon.xml
 build/**
 repo/build/**
+repo/data/**

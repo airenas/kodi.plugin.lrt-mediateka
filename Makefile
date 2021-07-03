@@ -1,15 +1,15 @@
-commit_count=$(shell git rev-list --count HEAD)
-version?=0.3.$(commit_count)
+include Makefile.options
+
 m_dir=$(CURDIR)
 deploy_dir=$(m_dir)/build
 
-build: $(deploy_dir)/kodi.plugin.lrt-mediateka-$(version).zip
+build: $(deploy_dir)/$(name)-$(version).zip
 
 $(deploy_dir): 
 	mkdir -p $@
 
-$(deploy_dir)/kodi.plugin.lrt-mediateka-$(version).zip: addon.xml | $(deploy_dir)
-	cd .. && zip -r $@ kodi.plugin.lrt-mediateka -x *.git* -x *.idea* -x *build* -x Makefile \
+$(deploy_dir)/$(name)-$(version).zip: addon.xml | $(deploy_dir)
+	cd .. && zip -r $@ $(name) -x *.git* -x *.idea* -x *build* -x Makefile \
 		-x addon.xml.in
 
 addon.xml: addon.xml.in
