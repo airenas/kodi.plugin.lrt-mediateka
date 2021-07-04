@@ -1,7 +1,7 @@
 include ../Makefile.options
 
 repo_version?=0.1.$(commit_count)
-repo_url?=http://localhost:10003
+repo_url?=http://192.168.1.71:10003
 m_dir=$(CURDIR)
 deploy_dir=$(m_dir)/build
 repo_dir?=$(CURDIR)/data
