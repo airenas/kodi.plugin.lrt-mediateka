@@ -1,9 +1,11 @@
 # -*- coding: utf-8 -*-
 import sys
+import os
 from urllib import urlencode
 from urlparse import parse_qsl
 import xbmcgui
 import xbmc
+import xbmcaddon
 import xbmcplugin
 
 from bs4 import BeautifulSoup
@@ -155,6 +157,12 @@ def get_videos(url):
 def list_categories():
     xbmcplugin.setPluginCategory(_handle, 'LRT Mediateka')
     xbmcplugin.setContent(_handle, 'videos')
+    ADDON = xbmcaddon.Addon()
+    PATH = sys.argv[0]
+    CACHE_PATH = xbmc.translatePath(ADDON.getAddonInfo("Profile"))
+    if not os.path.exists(CACHE_PATH):
+        os.makedirs(CACHE_PATH)
+    xbmc.log("Path {0} cache oath {1}".format(PATH, CACHE_PATH), level=xbmc.LOGNOTICE)
     for c in Categories:
         list_item = xbmcgui.ListItem(label=c['name'])
         list_item.setArt({'thumb': c['thumb'],
@@ -215,6 +223,7 @@ def play_video(url):
 
 def router(paramstring):
     params = dict(parse_qsl(paramstring))
+    xbmc.log("route {0} - {1}".format(params['action'], params['url']), level=xbmc.LOGNOTICE)
     if params:
         if params['action'] == 'list':
             list_videos(params['url'])
