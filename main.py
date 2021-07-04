@@ -1,97 +1,48 @@
 # -*- coding: utf-8 -*-
-import sys
+import io
+import json
 import os
+import sys
+import urllib2
 from urllib import urlencode
 from urlparse import parse_qsl
-import xbmcgui
+
 import xbmc
 import xbmcaddon
+import xbmcgui
 import xbmcplugin
-
 from bs4 import BeautifulSoup
-import json
-import urllib2
+
+import extractor
 
 _url = sys.argv[0]
 _handle = int(sys.argv[1])
 
-Categories = [{'name': 'Panorama',
-               'thumb': 'https://www.lrt.lt/img/2019/07/23/478013-415893-393x221.jpg',
-               'url': 'https://www.lrt.lt/mediateka/video/panorama',
-               'genre': 'Panorama'},
-              {'name': 'Filmai',
-               'thumb': 'https://www.lrt.lt/img/2019/05/03/421437-888122-615x345.jpg',
-               'url': 'https://www.lrt.lt/mediateka/video/filmai',
-               'genre': 'Filmai'},
-               {'name': 'Serialai',
-               'thumb': 'https://www.lrt.lt/img/2021/05/16/970232-487353-282x158.png',
-               'url': 'https://www.lrt.lt/tema/serialai',
-               'genre': 'Serialai'},
-              {'name': 'Sportas. Orai',
-               'thumb': 'https://www.lrt.lt/img/2019/07/23/478391-523744-615x345.jpg',
-               'url': 'https://www.lrt.lt/mediateka/video/sportas-orai',
-               'genre': 'Sportas'},
-              {'name': 'Mediateka',
-               'thumb': 'https://www.lrt.lt/img/2019/07/24/478788-929703-615x345.jpg',
-               'url': 'https://www.lrt.lt/mediateka',
-               'genre': 'Mediateka'},
-              {'name': 'Filmai (tema)',
-               'thumb': 'https://www.lrt.lt/img/2019/11/02/542178-778716-1287x836.jpg',
-               'url': 'https://www.lrt.lt/tema/filmai',
-               'genre': 'Filmai'},
-              {'name': 'Dokumentiniai filmai (tema)',
-               'thumb': 'https://www.lrt.lt/img/2019/11/02/542178-778716-1287x836.jpg',
-               'url': 'https://www.lrt.lt/tema/dokumentinis-filmas',
-               'genre': 'Filmai'},
-              {'name': 'Dokumentiniai filmai',
-               'thumb': 'https://www.lrt.lt/img/2019/11/02/542178-778716-1287x836.jpg',
-               'url': 'https://www.lrt.lt/mediateka/video/kiti/filmai/dokumentiniai-filmai',
-               'genre': 'Filmai'},
-              {'name': 'Dviračio žinios',
-               'thumb': 'https://www.lrt.lt/img/2019/11/02/542178-778716-1287x836.jpg',
-               'url': 'https://www.lrt.lt/mediateka/video/dviracio-zinios',
-               'genre': 'Dviračio žinios'},
-              {'name': 'Dienos tema',
-               'thumb': 'https://www.lrt.lt/img/2020/10/11/739344-314128-393x221.jpg',
-               'url': 'https://www.lrt.lt/mediateka/video/dienos-tema',
-               'genre': 'Dienos tema'},
-              {'name': 'Klauskite daktaro',
-               'thumb': 'https://www.lrt.lt/img/2019/10/31/538472-544-1287x836.jpg',
-               'url': 'https://www.lrt.lt/mediateka/video/klauskite-daktaro',
-               'genre': 'Klauskite daktaro'},
-              {'name': 'Beatos virtuvė',
-               'thumb': 'https://www.lrt.lt/img/2019/11/01/542088-934580-1287x836.jpg',
-               'url': 'https://www.lrt.lt/mediateka/video/beatos-virtuve',
-               'genre': 'Beatos virtuvė'}]
+Categories = [
+    {'name': 'Serialai',
+     'thumb': 'https://www.lrt.lt/img/2021/05/16/970232-487353-282x158.png',
+     'url': 'https://www.lrt.lt/tema/serialai',
+     'genre': 'Serialai'},
+    {'name': 'Mediateka',
+     'thumb': 'https://www.lrt.lt/img/2019/07/24/478788-929703-615x345.jpg',
+     'url': 'https://www.lrt.lt/mediateka',
+     'genre': 'Mediateka'},
+    {'name': 'Filmai (tema)',
+     'thumb': 'https://www.lrt.lt/img/2019/11/02/542178-778716-1287x836.jpg',
+     'url': 'https://www.lrt.lt/tema/filmai',
+     'genre': 'Filmai'},
+    {'name': 'Dokumentiniai filmai (tema)',
+     'thumb': 'https://www.lrt.lt/img/2019/11/02/542178-778716-1287x836.jpg',
+     'url': 'https://www.lrt.lt/tema/dokumentinis-filmas',
+     'genre': 'Filmai'},
+    {'name': 'Dokumentiniai filmai',
+     'thumb': 'https://www.lrt.lt/img/2019/11/02/542178-778716-1287x836.jpg',
+     'url': 'https://www.lrt.lt/mediateka/video/kiti/filmai/dokumentiniai-filmai',
+     'genre': 'Filmai'}]
+
 
 def get_url(**kwargs):
     return '{0}?{1}'.format(_url, urlencode(kwargs))
-
-
-############################################################################
-
-
-def extract_image(p_html):
-    img = p_html.find('img', attrs={'class': 'media-block__image'})
-    if img and img.get('src'):
-        return 'https://www.lrt.lt' + img.get('src')
-    if img and img.get('data-src'):
-        return 'https://www.lrt.lt' + img.get('data-src')
-    xbmc.log('No image ', level=xbmc.LOGNOTICE)
-    return ''
-
-
-############################################################################
-
-
-def extract_genre(p_html):
-    m = p_html.find('a', attrs={'class': 'info-block__link'})
-    if m:
-        return m.get_text()
-    return ''
-
-
-############################################################################
 
 
 def extract_date(p_html):
@@ -101,19 +52,6 @@ def extract_date(p_html):
         return m.get_text()
     xbmc.log('No date ', level=xbmc.LOGNOTICE)
     return None
-
-
-############################################################################
-
-
-def skip(p_html):
-    div = p_html.find_parent('div', attrs={'class': 'swipe-list-xs-down'})
-    if div:
-        return True
-    return False
-
-
-############################################################################
 
 
 def get_videos(url):
@@ -134,7 +72,7 @@ def get_videos(url):
         m = parentDiv.find('h3', attrs={'class': 'news__title'})
         link = m.find('a')
         ref = link.get('href')
-        if (not ref in uniqRes) and (not skip(d)):
+        if (not ref in uniqRes) and (not extractor.skip(d)):
             r = {}
 
             dt = extract_date(parentDiv)
@@ -144,14 +82,11 @@ def get_videos(url):
                 r["name"] = m.get_text()
 
             r["url"] = ref
-            r["genre"] = extract_genre(parentDiv)
-            r["thumb"] = extract_image(d)
+            r["genre"] = extractor.extract_genre(parentDiv)
+            r["thumb"] = extractor.extract_image(d)
             res.append(r)
             uniqRes.add(ref)
     return res
-
-
-############################################################################
 
 
 def list_categories():
@@ -159,10 +94,26 @@ def list_categories():
     xbmcplugin.setContent(_handle, 'videos')
     ADDON = xbmcaddon.Addon()
     PATH = sys.argv[0]
-    CACHE_PATH = xbmc.translatePath(ADDON.getAddonInfo("Profile"))
-    if not os.path.exists(CACHE_PATH):
-        os.makedirs(CACHE_PATH)
-    xbmc.log("Path {0} cache oath {1}".format(PATH, CACHE_PATH), level=xbmc.LOGNOTICE)
+    a_path = xbmc.translatePath(ADDON.getAddonInfo("Profile"))
+    if not os.path.exists(a_path):
+        os.makedirs(a_path)
+    xbmc.log("Path {0} cache oath {1}".format(PATH, a_path), level=xbmc.LOGNOTICE)
+    video = ADDON.getSetting("video")
+    xbmc.log("Video {0}".format(video), level=xbmc.LOGNOTICE)
+    videos = video.split(",")
+    for v in videos:
+        v = v.strip()
+        xbmc.log("Video {0}".format(v), level=xbmc.LOGNOTICE)
+        vd = get_video_data(v, a_path)
+        list_item = xbmcgui.ListItem(label=vd['name'])
+        list_item.setArt({'thumb': vd['thumb'],
+                          'icon': vd['thumb'],
+                          'fanart': vd['thumb']})
+        list_item.setInfo('video', {'title': vd['name'],
+                                    'genre': vd['genre'],
+                                    'mediatype': 'video'})
+        url = get_url(action='list', url=vd['url'])
+        xbmcplugin.addDirectoryItem(_handle, url, list_item, True)
     for c in Categories:
         list_item = xbmcgui.ListItem(label=c['name'])
         list_item.setArt({'thumb': c['thumb'],
@@ -178,7 +129,24 @@ def list_categories():
     xbmcplugin.endOfDirectory(_handle)
 
 
-############################################################################
+def get_video_data(v, path):
+    f = os.path.join(path, v + ".json")
+    if not os.path.exists(f):
+        xbmc.log('No file : ' + f, level=xbmc.LOGNOTICE)
+        url = "https://www.lrt.lt/mediateka/video/" + v
+        data = extractor.load_data(url, v)
+        if (data is None):
+            xbmc.log("Can't load " + url, level=xbmc.LOGERROR)
+            return
+        # with io.open(f, 'w', encoding='utf-8') as fo:
+        #      fo.write(json.dumps(data, ensure_ascii=False))
+    else:
+        xbmc.log('File found: ' + f, level=xbmc.LOGNOTICE)
+        with io.open(f, 'r', encoding='utf-8') as fo:
+            data = json.load(fo)
+    return data
+
+
 def list_videos(url):
     xbmcplugin.setPluginCategory(_handle, url)
     xbmcplugin.setContent(_handle, 'videos')
@@ -198,16 +166,10 @@ def list_videos(url):
     xbmcplugin.endOfDirectory(_handle)
 
 
-############################################################################
-
-
 def get_play_url(url):
     data = json.load(urllib2.urlopen(
         'https://www.lrt.lt/servisai/stream_url/vod/media_info/?url=' + url))
     return data["playlist_item"]["file"]
-
-
-############################################################################
 
 
 def play_video(url):
@@ -218,13 +180,10 @@ def play_video(url):
     xbmcplugin.setResolvedUrl(_handle, True, listitem=play_item)
 
 
-############################################################################
-
-
 def router(paramstring):
     params = dict(parse_qsl(paramstring))
-    xbmc.log("route {0} - {1}".format(params['action'], params['url']), level=xbmc.LOGNOTICE)
     if params:
+        xbmc.log("route {0} - {1}".format(params['action'], params['url']), level=xbmc.LOGNOTICE)
         if params['action'] == 'list':
             list_videos(params['url'])
         else:
@@ -234,6 +193,7 @@ def router(paramstring):
                 raise ValueError(
                     'Invalid paramstring: {0}!'.format(paramstring))
     else:
+        xbmc.log("no params", level=xbmc.LOGNOTICE)
         list_categories()
 
 
