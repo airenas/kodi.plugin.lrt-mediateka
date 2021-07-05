@@ -93,7 +93,7 @@ def list_categories():
     #                                 'mediatype': 'video'})
     #     url = get_url(action='list', url=vd['url'])
     #     xbmcplugin.addDirectoryItem(_handle, url, list_item, True)
-    for c in categories.get():
+    for c in categories.get(ADDON):
         xbmc.log("Video {0}".format(c.id), level=xbmc.LOGNOTICE)
         vd = get_video_data(c.url, c.name, c.id, a_path)
 

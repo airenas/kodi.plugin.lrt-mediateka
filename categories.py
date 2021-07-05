@@ -36,7 +36,7 @@ statics = [
 ]
 
 
-def get():
+def get(addon):
     res = []
     for st in statics:
         c = CInfo()
@@ -44,4 +44,12 @@ def get():
         c.id = st['name']
         c.url = st['url']
         res.append(c)
+    for key in settings:
+        if addon.getSetting(key):
+            for v_name in settings[key]:
+                c = CInfo()
+                c.name = v_name.title()
+                c.id = v_name
+                c.url = "https://www.lrt.lt/mediateka/video/" + v_name
+                res.append(c)
     return res
