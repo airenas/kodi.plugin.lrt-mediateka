@@ -79,7 +79,7 @@ def list_categories():
         os.makedirs(a_path)
     xbmc.log("Path {0} cache oath {1}".format(PATH, a_path), level=xbmc.LOGNOTICE)
 
-    drop_old_files()
+    drop_old_files(a_path)
 
     for c in categories.get(ADDON):
         xbmc.log("Video {0}".format(c.id), level=xbmc.LOGNOTICE)
