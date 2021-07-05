@@ -40,7 +40,8 @@ $(repo_dir)/$(name)/$(name)-$(version).zip: ../build/$(name)-$(version).zip | $(
 prepare-repo: $(repo_dir)/addons.xml.md5 $(repo_dir)/lrt-repo-$(repo_version).zip \
 	$(repo_dir)/$(name)/$(name)-$(version).zip
 run-repo: prepare-repo
-	docker run -p $(port):80 -v $(repo_dir):/usr/share/nginx/html nginx:1.17.9
+	docker run -p $(port):80 -v $(repo_dir):/usr/share/nginx/html \
+		-v $(CURDIR)/nginx.conf:/etc/nginx/conf.d/default.conf nginx:1.17.9
 ########################################################################	
 
 clean:
