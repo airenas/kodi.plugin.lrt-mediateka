@@ -13,32 +13,11 @@ import xbmcgui
 import xbmcplugin
 from bs4 import BeautifulSoup
 
+import categories
 import extractor
 
 _url = sys.argv[0]
 _handle = int(sys.argv[1])
-
-Categories = [
-    {'name': 'Serialai',
-     'thumb': 'https://www.lrt.lt/img/2021/05/16/970232-487353-282x158.png',
-     'url': 'https://www.lrt.lt/tema/serialai',
-     'genre': 'Serialai'},
-    {'name': 'Mediateka',
-     'thumb': 'https://www.lrt.lt/img/2019/07/24/478788-929703-615x345.jpg',
-     'url': 'https://www.lrt.lt/mediateka',
-     'genre': 'Mediateka'},
-    {'name': 'Filmai (tema)',
-     'thumb': 'https://www.lrt.lt/img/2019/11/02/542178-778716-1287x836.jpg',
-     'url': 'https://www.lrt.lt/tema/filmai',
-     'genre': 'Filmai'},
-    {'name': 'Dokumentiniai filmai (tema)',
-     'thumb': 'https://www.lrt.lt/img/2019/11/02/542178-778716-1287x836.jpg',
-     'url': 'https://www.lrt.lt/tema/dokumentinis-filmas',
-     'genre': 'Filmai'},
-    {'name': 'Dokumentiniai filmai',
-     'thumb': 'https://www.lrt.lt/img/2019/11/02/542178-778716-1287x836.jpg',
-     'url': 'https://www.lrt.lt/mediateka/video/kiti/filmai/dokumentiniai-filmai',
-     'genre': 'Filmai'}]
 
 
 def get_url(**kwargs):
@@ -98,13 +77,26 @@ def list_categories():
     if not os.path.exists(a_path):
         os.makedirs(a_path)
     xbmc.log("Path {0} cache oath {1}".format(PATH, a_path), level=xbmc.LOGNOTICE)
-    video = ADDON.getSetting("video")
-    xbmc.log("Video {0}".format(video), level=xbmc.LOGNOTICE)
-    videos = video.split(",")
-    for v in videos:
-        v = v.strip()
-        xbmc.log("Video {0}".format(v), level=xbmc.LOGNOTICE)
-        vd = get_video_data(v, a_path)
+    # video = ADDON.getSetting("video")
+    # xbmc.log("Video {0}".format(video), level=xbmc.LOGNOTICE)
+    # videos = video.split(",")
+    # for v in videos:
+    #     v = v.strip()
+    #     xbmc.log("Video {0}".format(v), level=xbmc.LOGNOTICE)
+    #     vd = get_video_data(v, a_path)
+    #     list_item = xbmcgui.ListItem(label=vd['name'])
+    #     list_item.setArt({'thumb': vd['thumb'],
+    #                       'icon': vd['thumb'],
+    #                       'fanart': vd['thumb']})
+    #     list_item.setInfo('video', {'title': vd['name'],
+    #                                 'genre': vd['genre'],
+    #                                 'mediatype': 'video'})
+    #     url = get_url(action='list', url=vd['url'])
+    #     xbmcplugin.addDirectoryItem(_handle, url, list_item, True)
+    for c in categories.get():
+        xbmc.log("Video {0}".format(c.id), level=xbmc.LOGNOTICE)
+        vd = get_video_data(c.url, c.name, c.id, a_path)
+
         list_item = xbmcgui.ListItem(label=vd['name'])
         list_item.setArt({'thumb': vd['thumb'],
                           'icon': vd['thumb'],
@@ -114,28 +106,16 @@ def list_categories():
                                     'mediatype': 'video'})
         url = get_url(action='list', url=vd['url'])
         xbmcplugin.addDirectoryItem(_handle, url, list_item, True)
-    for c in Categories:
-        list_item = xbmcgui.ListItem(label=c['name'])
-        list_item.setArt({'thumb': c['thumb'],
-                          'icon': c['thumb'],
-                          'fanart': c['thumb']})
-        list_item.setInfo('video', {'title': c['name'],
-                                    'genre': c['genre'],
-                                    'mediatype': 'video'})
-        url = get_url(action='list', url=c['url'])
-        is_folder = True
-        xbmcplugin.addDirectoryItem(_handle, url, list_item, is_folder)
     xbmcplugin.addSortMethod(_handle, xbmcplugin.SORT_METHOD_LABEL_IGNORE_THE)
     xbmcplugin.endOfDirectory(_handle)
 
 
-def get_video_data(v, path):
-    f = os.path.join(path, v + ".json")
+def get_video_data(url, name, cid, path):
+    f = os.path.join(path, cid + ".json")
     if not os.path.exists(f):
         xbmc.log('No file : ' + f, level=xbmc.LOGNOTICE)
-        url = "https://www.lrt.lt/mediateka/video/" + v
-        data = extractor.load_data(url, v)
-        if (data is None):
+        data = extractor.load_data(url, name)
+        if data is None:
             xbmc.log("Can't load " + url, level=xbmc.LOGERROR)
             return
         with io.open(f, 'w', encoding='utf-8') as fo:
