@@ -3,6 +3,7 @@ import io
 import json
 import os
 import sys
+import time
 import urllib2
 from urllib import urlencode
 from urlparse import parse_qsl
@@ -77,22 +78,9 @@ def list_categories():
     if not os.path.exists(a_path):
         os.makedirs(a_path)
     xbmc.log("Path {0} cache oath {1}".format(PATH, a_path), level=xbmc.LOGNOTICE)
-    # video = ADDON.getSetting("video")
-    # xbmc.log("Video {0}".format(video), level=xbmc.LOGNOTICE)
-    # videos = video.split(",")
-    # for v in videos:
-    #     v = v.strip()
-    #     xbmc.log("Video {0}".format(v), level=xbmc.LOGNOTICE)
-    #     vd = get_video_data(v, a_path)
-    #     list_item = xbmcgui.ListItem(label=vd['name'])
-    #     list_item.setArt({'thumb': vd['thumb'],
-    #                       'icon': vd['thumb'],
-    #                       'fanart': vd['thumb']})
-    #     list_item.setInfo('video', {'title': vd['name'],
-    #                                 'genre': vd['genre'],
-    #                                 'mediatype': 'video'})
-    #     url = get_url(action='list', url=vd['url'])
-    #     xbmcplugin.addDirectoryItem(_handle, url, list_item, True)
+
+    drop_old_files()
+
     for c in categories.get(ADDON):
         xbmc.log("Video {0}".format(c.id), level=xbmc.LOGNOTICE)
         vd = get_video_data(c.url, c.name, c.id, a_path)
@@ -108,6 +96,16 @@ def list_categories():
         xbmcplugin.addDirectoryItem(_handle, url, list_item, True)
     xbmcplugin.addSortMethod(_handle, xbmcplugin.SORT_METHOD_LABEL_IGNORE_THE)
     xbmcplugin.endOfDirectory(_handle)
+
+
+def drop_old_files(path):
+    now = time.time()
+    for filename in os.listdir(path):
+        if file.endswith(".json") and os.path.isfile(ff):
+            ff = os.path.join(path, filename)
+            if os.path.getmtime(ff) < now - 10 * 86400:
+                xbmc.log("Drop file {0}".format(ff), level=xbmc.LOGNOTICE)
+                os.remove(ff)
 
 
 def get_video_data(url, name, cid, path):
