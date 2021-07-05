@@ -44,12 +44,13 @@ def get(addon):
         c.id = st['name']
         c.url = st['url']
         res.append(c)
-    for key in settings:
-        if addon.getSetting(key):
-            for v_name in settings[key]:
-                c = CInfo()
-                c.name = v_name.title()
-                c.id = v_name
-                c.url = "https://www.lrt.lt/mediateka/video/" + v_name
-                res.append(c)
+    for set in settings:
+        for key in set:
+            if addon.getSetting(key):
+                for v_name in set[key]:
+                    c = CInfo()
+                    c.name = v_name.title()
+                    c.id = v_name
+                    c.url = "https://www.lrt.lt/mediateka/video/" + v_name
+                    res.append(c)
     return res
