@@ -1,4 +1,7 @@
 # -*- coding: utf-8 -*-
+import xbmc
+
+
 class CInfo:
 
     def __init__(self):
@@ -46,6 +49,8 @@ def get(addon):
         res.append(c)
     for set in settings:
         for key in set:
+            v = addon.getSetting(key)
+            xbmc.log("Key {0} {1}".format(key, v), level=xbmc.LOGNOTICE)
             if addon.getSetting(key):
                 for v_name in set[key]:
                     c = CInfo()
@@ -53,4 +58,14 @@ def get(addon):
                     c.id = v_name
                     c.url = "https://www.lrt.lt/mediateka/video/" + v_name
                     res.append(c)
+    video = addon.getSetting("video")
+    videos = video.split(",")
+    for v in videos:
+        v = v.strip()
+        if v:
+            c = CInfo()
+            c.name = v.title()
+            c.id = v
+            c.url = "https://www.lrt.lt/mediateka/video/" + v
+            res.append(c)
     return res
