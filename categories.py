@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-import xbmc
 
 
 class CInfo:
@@ -49,9 +48,7 @@ def get(addon):
         res.append(c)
     for set in settings:
         for key in set:
-            v = addon.getSetting(key)
-            xbmc.log("Key {0} {1}".format(key, v), level=xbmc.LOGNOTICE)
-            if addon.getSetting(key):
+            if addon.getSetting(key) == "true":
                 for v_name in set[key]:
                     c = CInfo()
                     c.name = v_name.title()
