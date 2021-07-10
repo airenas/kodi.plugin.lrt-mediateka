@@ -48,7 +48,7 @@ Sukonfigūruotos kelios statinės kategorijos: Panorama, Sportas, Filmai. Galima
 - Įskiepyje turėtų atsirasti nauja kategorija:
     ![Option3](info/lrt-addon-option.png?raw=true "Option3")
 
-## Licenzijos
+## Licencijos
 
 Ikona ir kiti paveikslėliai yra [LRT](http://www.lrt.lt) nuosavybė!
 
