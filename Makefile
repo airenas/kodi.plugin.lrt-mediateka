@@ -10,7 +10,7 @@ $(deploy_dir):
 
 $(deploy_dir)/$(name)-$(version).zip: addon.xml | $(deploy_dir)
 	cd .. && zip -r $@ $(name) -x *.git* -x *.idea* -x */build/* -x */Makefile* -x */addon.xml.in -x */repo/*/** \
-		-x */repo/* -x */repo/*/*/*
+		-x */repo/* -x */repo/*/*/* -x */info/*
 
 addon.xml: addon.xml.in
 	cat $< | envsubst > $@

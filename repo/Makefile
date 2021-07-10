@@ -42,6 +42,11 @@ prepare-repo: $(repo_dir)/addons.xml.md5 $(repo_dir)/lrt-repo-$(repo_version).zi
 run-repo: prepare-repo
 	docker run -p $(port):80 -v $(repo_dir):/usr/share/nginx/html \
 		-v $(CURDIR)/nginx.conf:/etc/nginx/conf.d/default.conf nginx:1.17.9
+prepare-deploy: $(github_dir)/addons.xml $(github_dir)/addons.xml.md5 $(github_dir)/lrt-repo-$(repo_version).zip \
+	$(github_dir)/$(name)/$(name)-$(version).zip
+$(github_dir)/%: $(repo_dir)/%			
+	mkdir -p `dirname $@`
+	cp $< $@
 ########################################################################	
 
 clean:
