@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <settings>
     <category label="32001">
-        <setting label="32011" type="text" id="video" default="naujasis-popiezius,viktorija-1"/>
+        <setting label="32011" type="text" id="video" default="viktorija-1"/>
         <setting type="sep"/>
         <!--        <setting label="32012" type="text"   id="full" default=""/>-->
         <setting id="v_panorama" type="bool" label="32013" default="true"/>
