@@ -8,6 +8,7 @@ import urllib2
 from urllib import urlencode
 from urlparse import parse_qsl
 
+import buggalo
 import xbmc
 import xbmcaddon
 import xbmcgui
@@ -85,6 +86,10 @@ def list_categories():
         xbmc.log("Video {0}".format(c.id), level=xbmc.LOGNOTICE)
         vd = get_video_data(c.url, c.name, c.id, a_path)
 
+        if vd is None:
+            display_error(ADDON, "Can't load " + c.url)
+            continue
+
         list_item = xbmcgui.ListItem(label=vd['name'])
         list_item.setArt({'thumb': vd['thumb'],
                           'icon': vd['thumb'],
@@ -96,6 +101,12 @@ def list_categories():
         xbmcplugin.addDirectoryItem(_handle, url, list_item, True)
     xbmcplugin.addSortMethod(_handle, xbmcplugin.SORT_METHOD_LABEL_IGNORE_THE)
     xbmcplugin.endOfDirectory(_handle)
+
+
+def display_error(addon, message='n/a'):
+    line1 = addon.getLocalizedString(30250)
+    line2 = addon.getLocalizedString(30251)
+    xbmcgui.Dialog().ok(buggalo.getRandomHeading(), line1, line2, message)
 
 
 def drop_old_files(path):
@@ -116,7 +127,7 @@ def get_video_data(url, name, cid, path):
         data = extractor.load_data(url, name)
         if data is None:
             xbmc.log("Can't load " + url, level=xbmc.LOGERROR)
-            return
+            return None
         with io.open(f, 'w', encoding='utf-8') as fo:
             fo.write(json.dumps(data, ensure_ascii=False))
     else:
