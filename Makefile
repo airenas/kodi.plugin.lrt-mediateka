@@ -15,6 +15,8 @@ $(deploy_dir)/$(name)-$(version).zip: addon.xml | $(deploy_dir)
 addon.xml: addon.xml.in
 	cat $< | envsubst > $@
 
+deploy-to-git:
+	cd repo && $(MAKE) clean prepare-deploy
 
 clean:
 	rm -rf $(deploy_dir)

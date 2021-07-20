@@ -8,7 +8,6 @@ import urllib2
 from urllib import urlencode
 from urlparse import parse_qsl
 
-import buggalo
 import xbmc
 import xbmcaddon
 import xbmcgui
@@ -106,7 +105,7 @@ def list_categories():
 def display_error(addon, message='n/a'):
     line1 = addon.getLocalizedString(30250)
     line2 = addon.getLocalizedString(30251)
-    xbmcgui.Dialog().ok(buggalo.getRandomHeading(), line1, line2, message)
+    xbmcgui.Dialog().notification(line1, line2 + message, xbmcgui.NOTIFICATION_ERROR, 5000)
 
 
 def drop_old_files(path):
