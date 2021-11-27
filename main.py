@@ -12,7 +12,6 @@ import xbmc
 import xbmcaddon
 import xbmcgui
 import xbmcplugin
-from bs4 import BeautifulSoup
 
 import categories
 import extractor
@@ -23,50 +22,6 @@ _handle = int(sys.argv[1])
 
 def get_url(**kwargs):
     return '{0}?{1}'.format(_url, urlencode(kwargs))
-
-
-def extract_date(p_html):
-    m = p_html.find('span', attrs={'class': 'info-block__text'})
-    if m:
-        xbmc.log('Date ' + m.get_text().encode('utf-8'), level=xbmc.LOGNOTICE)
-        return m.get_text()
-    xbmc.log('No date ', level=xbmc.LOGNOTICE)
-    return None
-
-
-def get_videos(url):
-    xbmc.log("Loading " + url, level=xbmc.LOGNOTICE)
-    headers = {'Cookie': 'beget=begetok; has_js=1;',
-               'User-agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_6) AppleWebKit/604.1.38 (KHTML, like Gecko) Version/11.0 Safari/604.1.38'}
-    req = urllib2.Request(url, None, headers)
-    resp = urllib2.urlopen(req)
-    html = resp.read()
-    soup = BeautifulSoup(html, "html.parser")
-    divs = soup.find_all('div', attrs={'class': 'media-block'})
-    xbmc.log('Div size ' + str(len(divs)), level=xbmc.LOGNOTICE)
-    res = []
-    uniqRes = set()
-    for d in divs:
-        # xbmc.log('Div: ' + str(d), level=xbmc.LOGNOTICE)
-        parentDiv = d.find_parent('div')
-        m = parentDiv.find('h3', attrs={'class': 'news__title'})
-        link = m.find('a')
-        ref = link.get('href')
-        if (not ref in uniqRes) and (not extractor.skip(d)):
-            r = {}
-
-            dt = extract_date(parentDiv)
-            if dt:
-                r["name"] = dt + ' ' + m.get_text()
-            else:
-                r["name"] = m.get_text()
-
-            r["url"] = ref
-            r["genre"] = extractor.extract_genre(parentDiv)
-            r["thumb"] = extractor.extract_image(d)
-            res.append(r)
-            uniqRes.add(ref)
-    return res
 
 
 def list_categories():
@@ -139,7 +94,7 @@ def get_video_data(url, name, cid, path):
 def list_videos(url):
     xbmcplugin.setPluginCategory(_handle, url)
     xbmcplugin.setContent(_handle, 'videos')
-    videos = get_videos(url)
+    videos = extractor.get_videos(url)
     for video in videos:
         list_item = xbmcgui.ListItem(label=video['name'])
         list_item.setInfo('video', {'title': video['name'],

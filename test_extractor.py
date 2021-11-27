@@ -8,6 +8,10 @@ class MyTestExtract(unittest.TestCase):
         d = extractor.load_data("https://www.lrt.lt/mediateka/video/panorama", "panorama")
         self.assertEqual(d["name"], "Panorama")
 
+    def test_videos(self):
+        d = extractor.get_videos("https://www.lrt.lt/mediateka/video/panorama")
+        self.assertEqual(d[0]["genre"], "Panorama")
+
     def test_none(self):
         d = extractor.load_data("https://www.lrt.lt/mediateka/video/panorama-none", "panorama")
         self.assertIsNone(d)
