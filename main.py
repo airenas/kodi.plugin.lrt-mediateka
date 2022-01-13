@@ -30,9 +30,10 @@ def list_categories():
     ADDON = xbmcaddon.Addon()
     PATH = sys.argv[0]
     a_path = xbmc.translatePath(ADDON.getAddonInfo("Profile"))
+    a_path = os.path.join(a_path, ".cache")
     if not os.path.exists(a_path):
         os.makedirs(a_path)
-    xbmc.log("Path {0} cache oath {1}".format(PATH, a_path), level=xbmc.LOGNOTICE)
+    xbmc.log("Path {0} cache path {1}".format(PATH, a_path), level=xbmc.LOGNOTICE)
 
     drop_old_files(a_path)
 
