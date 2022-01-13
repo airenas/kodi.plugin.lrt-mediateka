@@ -1,3 +1,6 @@
+# -*- coding: utf-8 -*-
+import io
+import json
 import unittest
 
 import extractor
@@ -20,9 +23,11 @@ class MyTestExtract(unittest.TestCase):
         d = extractor.load_data("https://www.lrt.lt/mediateka/video/panorama-none", "panorama")
         self.assertIsNone(d)
 
-    def test_rasytojai_category(self):
+    def test_rasytojai_categorySave(self):
         d = extractor.load_data("https://www.lrt.lt/tema/dokumentiniai-filmai-rasytojai", "panorama")
-        self.assertEqual(d["name"], "Panorama")
+        with io.open("t.json", 'w', encoding='utf-8') as fo:
+            j_str = json.dumps(d, ensure_ascii=False)
+            fo.write(j_str)
 
 
 if __name__ == '__main__':

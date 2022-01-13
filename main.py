@@ -74,7 +74,7 @@ def drop_old_files(path):
         _, ext = os.path.splitext(filename)
         ff = os.path.join(path, filename)
         if ext == ".json" and os.path.isfile(ff):
-            if os.path.getmtime(ff) < now - 10 * 86400:
+            if os.path.getmtime(ff) < now - 10 * 86400 or os.path.getsize(ff) == 0:
                 xbmc.log("Drop file {0}".format(ff), level=xbmc.LOGNOTICE)
                 os.remove(ff)
 
