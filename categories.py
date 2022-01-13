@@ -52,7 +52,7 @@ def get(addon):
     for st in statics:
         c = CInfo()
         c.name = st['name']
-        c.id = st['name']
+        c.id = st['id']
         c.url = st['url']
         res.append(c)
     for set in settings:
@@ -61,7 +61,7 @@ def get(addon):
                 for v_name in set[key]:
                     c = CInfo()
                     c.name = v_name.title()
-                    c.id = v_name
+                    c.id = "video-" + v_name
                     c.url = "https://www.lrt.lt/mediateka/video/" + v_name
                     res.append(c)
     video = addon.getSetting("video")
@@ -71,7 +71,7 @@ def get(addon):
         if v:
             c = CInfo()
             c.name = v.title()
-            c.id = v
+            c.id = "video-" + v
             c.url = "https://www.lrt.lt/mediateka/video/" + v
             res.append(c)
     return res

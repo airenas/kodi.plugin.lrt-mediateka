@@ -38,7 +38,11 @@ def list_categories():
 
     for c in categories.get(ADDON):
         xbmc.log("Video {0}".format(c.id), level=xbmc.LOGNOTICE)
-        vd = get_video_data(c.url, c.name, c.id, a_path)
+        try:
+            vd = get_video_data(c.url, c.name, c.id, a_path)
+        except Exception as err:
+            display_error(ADDON, "Can't load " + c.url + "\n" + err.message)
+            continue
 
         if vd is None:
             display_error(ADDON, "Can't load " + c.url)
