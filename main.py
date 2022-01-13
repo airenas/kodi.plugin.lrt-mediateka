@@ -42,7 +42,7 @@ def list_categories():
         try:
             vd = get_video_data(c.url, c.name, c.id, a_path)
         except Exception as err:
-            display_error(ADDON, "Can't load " + c.url + "\n" + err.message)
+            display_error(ADDON, "Can't load " + c.url, err)
             continue
 
         if vd is None:
@@ -62,9 +62,12 @@ def list_categories():
     xbmcplugin.endOfDirectory(_handle)
 
 
-def display_error(addon, message='n/a'):
+def display_error(addon, message='n/a', err=None):
     line1 = addon.getLocalizedString(30250)
     line2 = addon.getLocalizedString(30251)
+    xbmc.log(message, level=xbmc.LOGERROR)
+    if err is not None:
+        xbmc.log(err, level=xbmc.LOGERROR)
     xbmcgui.Dialog().notification(line1, line2 + message, xbmcgui.NOTIFICATION_ERROR, 5000)
 
 
@@ -93,6 +96,7 @@ def get_video_data(url, name, cid, path):
             j_str = json.dumps(data, ensure_ascii=False)
             xbmc.log("Json : '{0}'".format(j_str), level=xbmc.LOGNOTICE)
             fo.write(j_str)
+            xbmc.log("Wrote : '{0}'".format(f), level=xbmc.LOGNOTICE)
     else:
         xbmc.log('File found: ' + f, level=xbmc.LOGNOTICE)
         with io.open(f, 'r', encoding='utf-8') as fo:
