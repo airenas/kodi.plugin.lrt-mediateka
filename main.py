@@ -67,7 +67,7 @@ def display_error(addon, message='n/a', err=None):
     line2 = addon.getLocalizedString(30251)
     xbmc.log(message, level=xbmc.LOGERROR)
     if err is not None:
-        xbmc.log(err, level=xbmc.LOGERROR)
+        xbmc.log(repr(err), level=xbmc.LOGERROR)
     xbmcgui.Dialog().notification(line1, line2 + message, xbmcgui.NOTIFICATION_ERROR, 5000)
 
 
