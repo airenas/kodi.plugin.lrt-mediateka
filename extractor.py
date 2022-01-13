@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
-import urllib2
 import logging
+import urllib2
+
 from bs4 import BeautifulSoup
 
 
@@ -27,16 +28,15 @@ def load_data(url, name):
     resp = urllib2.urlopen(req)
     html = resp.read()
     soup = BeautifulSoup(html, "html.parser")
-    divs = soup.find_all('div', attrs={'class': 'media-block'})
+    divs = get_video_divs(soup)
+
     for d in divs:
-        parentDiv = d.find_parent('div')
+        parent_div = d.find_parent('div')
         if not skip(d):
-            r = {}
-            r["name"] = name.title()
-            r["url"] = url
-            r["genre"] = extract_genre(parentDiv)
-            r["thumb"] = extract_image(parentDiv)
-            return r
+            return {"name": name.title(),
+                    "url": url,
+                    "genre": extract_genre(parent_div),
+                    "thumb": extract_image(parent_div)}
     return None
 
 
@@ -54,6 +54,19 @@ def skip_news(p_html):
                 return True
     return False
 
+
+def get_video_divs(soup):
+    div_p = soup.find_all('div', {"class": "news-list"})
+    logging.info('Div size ' + str(len(div_p)))
+    divs = []
+    for d in div_p:
+        if not skip_news(d):
+            dt = d.find_all('div', attrs={'class': 'media-block'})
+            for dd in dt:
+                divs.append(dd)
+    return divs
+
+
 def get_videos(url):
     logging.info("Loading " + url)
     headers = {'Cookie': 'beget=begetok; has_js=1;',
@@ -63,37 +76,30 @@ def get_videos(url):
     html = resp.read()
     soup = BeautifulSoup(html, "html.parser")
 
-    div_p = soup.find_all('div', {"class": "news-list"})
-    logging.info('Div size ' + str(len(div_p)))
-    divs = []
-    for d in div_p:
-        if not skip_news(d):
-            dt = d.find_all('div', attrs={'class': 'media-block'})
-            for dd in dt:
-                divs.append(dd)
-
+    divs = get_video_divs(soup)
     logging.info('Div size ' + str(len(divs)))
+
     res = []
-    uniqRes = set()
+    uniq_res = set()
     for d in divs:
-        parentDiv = d.find_parent('div')
-        m = parentDiv.find('h3', attrs={'class': 'news__title'})
+        parent_div = d.find_parent('div')
+        m = parent_div.find('h3', attrs={'class': 'news__title'})
         link = m.find('a')
         ref = link.get('href')
-        if (not ref in uniqRes) and (not skip(d)):
+        if (not ref in uniq_res) and (not skip(d)):
             r = {}
 
-            dt = extract_date(parentDiv)
+            dt = extract_date(parent_div)
             if dt:
                 r["name"] = dt + ' ' + m.get_text()
             else:
                 r["name"] = m.get_text()
 
             r["url"] = ref
-            r["genre"] = extract_genre(parentDiv)
+            r["genre"] = extract_genre(parent_div)
             r["thumb"] = extract_image(d)
             res.append(r)
-            uniqRes.add(ref)
+            uniq_res.add(ref)
     return res
 
 
