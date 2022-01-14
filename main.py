@@ -88,13 +88,9 @@ def get_video_data(url, name, cid, path):
         xbmc.log('No file : ' + f, level=xbmc.LOGNOTICE)
         xbmc.log('Load data from : ' + url, level=xbmc.LOGNOTICE)
         data = extractor.load_data(url, name)
-        if data is None:
-            xbmc.log("Can't load " + url, level=xbmc.LOGERROR)
-            return None
-        j_str = json.dumps(data, ensure_ascii=False, encoding='utf8')
-        xbmc.log("Json : '{0}'".format(j_str), level=xbmc.LOGNOTICE)
+        j_str = extractor.to_json_string(data)
         with io.open(f, 'w', encoding='utf-8') as fo:
-            fo.write(unicode(j_str))
+            fo.write(j_str.decode("utf8"))
     else:
         xbmc.log('File found: ' + f, level=xbmc.LOGNOTICE)
         with io.open(f, 'r', encoding='utf-8') as fo:

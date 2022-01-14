@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+import json
 import logging
 import urllib2
 
@@ -55,6 +56,11 @@ def skip_news(p_html):
     return False
 
 
+def is_media(p_html):
+    play_span = p_html.find_all('span', attrs={'class': 'play-button'})
+    return len(play_span) > 0
+
+
 def get_video_divs(soup):
     div_p = soup.find_all('div', {"class": "news-list"})
     logging.info('Div size ' + str(len(div_p)))
@@ -63,7 +69,8 @@ def get_video_divs(soup):
         if not skip_news(d):
             dt = d.find_all('div', attrs={'class': 'media-block'})
             for dd in dt:
-                divs.append(dd)
+                if is_media(dd):
+                    divs.append(dd)
     return divs
 
 
@@ -110,3 +117,12 @@ def extract_date(p_html):
         return m.get_text()
     logging.info('No date ')
     return None
+
+
+def to_json_string(data):
+    try:
+        res = json.dumps(data, ensure_ascii=False).encode('utf8')
+    except Exception as err:
+        logging.warn(err)
+        res = json.dumps(data, ensure_ascii=True).encode('utf8')
+    return res

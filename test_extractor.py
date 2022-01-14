@@ -1,7 +1,10 @@
 # -*- coding: utf-8 -*-
 import io
 import json
+import sys
 import unittest
+
+from sympy.stats import std
 
 import extractor
 
@@ -17,7 +20,7 @@ class MyTestExtract(unittest.TestCase):
 
     def test_rasytojai(self):
         d = extractor.get_videos("https://www.lrt.lt/tema/dokumentiniai-filmai-rasytojai")
-        self.assertEqual(d[0]["genre"], "Filmai")
+        self.assertGreater(len(d[0]), 0)
 
     def test_none(self):
         d = extractor.load_data("https://www.lrt.lt/mediateka/video/panorama-none", "panorama")
@@ -25,9 +28,7 @@ class MyTestExtract(unittest.TestCase):
 
     def test_rasytojai_categorySave(self):
         d = extractor.load_data("https://www.lrt.lt/tema/dokumentiniai-filmai-rasytojai", "panorama")
-        with io.open("t.json", 'w', encoding='utf-8') as fo:
-            j_str = json.dumps(d, ensure_ascii=False, encoding='utf8')
-            fo.write(unicode(j_str))
+        sys.stdout.write(extractor.to_json_string(d).decode("utf8"))
 
 
 if __name__ == '__main__':
