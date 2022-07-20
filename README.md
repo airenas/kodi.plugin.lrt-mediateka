@@ -5,7 +5,7 @@
 Paprastas Kodi įskiepis žiūrėti video iš LRT mediatekos.
 Sukonfigūruotos kelios statinės kategorijos: Panorama, Sportas, Filmai. Galima susikonfigūruoti savo norimus serialus ar video kategorijas.
 
-Šiuo metu veikia tik su 18 versija.
+Šiuo metu veikia tik su 19 versija.
 
 ## Diegimas
 
@@ -52,4 +52,4 @@ Sukonfigūruotos kelios statinės kategorijos: Panorama, Sportas, Filmai. Galima
 
 Ikona ir kiti paveikslėliai yra [LRT](http://www.lrt.lt) nuosavybė!
 
-Copyright © 2021, [Airenas Vaičiūnas](https://github.com/airenas).
+Copyright © 2022, [Airenas Vaičiūnas](https://github.com/airenas).

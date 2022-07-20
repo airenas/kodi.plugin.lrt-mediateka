@@ -4,9 +4,9 @@ import json
 import os
 import sys
 import time
-import urllib2
-from urllib import urlencode
-from urlparse import parse_qsl
+import urllib.request
+from urllib.parse import urlencode
+from urllib.parse import parse_qsl
 
 import xbmc
 import xbmcaddon
@@ -33,12 +33,12 @@ def list_categories():
     a_path = os.path.join(a_path, ".cache")
     if not os.path.exists(a_path):
         os.makedirs(a_path)
-    xbmc.log("Path {0} cache path {1}".format(PATH, a_path), level=xbmc.LOGNOTICE)
+    xbmc.log("Path {0} cache path {1}".format(PATH, a_path), level=xbmc.LOGINFO)
 
     drop_old_files(a_path)
 
     for c in categories.get(ADDON):
-        xbmc.log("Video {0}".format(c.id), level=xbmc.LOGNOTICE)
+        xbmc.log("Video {0}".format(c.id), level=xbmc.LOGINFO)
         try:
             vd = get_video_data(c.url, c.name, c.id, a_path)
         except Exception as err:
@@ -78,21 +78,21 @@ def drop_old_files(path):
         ff = os.path.join(path, filename)
         if ext == ".json" and os.path.isfile(ff):
             if os.path.getmtime(ff) < now - 10 * 86400 or os.path.getsize(ff) == 0:
-                xbmc.log("Drop file {0}".format(ff), level=xbmc.LOGNOTICE)
+                xbmc.log("Drop file {0}".format(ff), level=xbmc.LOGINFO)
                 os.remove(ff)
 
 
 def get_video_data(url, name, cid, path):
     f = os.path.join(path, cid + ".json")
     if not os.path.exists(f):
-        xbmc.log('No file : ' + f, level=xbmc.LOGNOTICE)
-        xbmc.log('Load data from : ' + url, level=xbmc.LOGNOTICE)
+        xbmc.log('No file : ' + f, level=xbmc.LOGINFO)
+        xbmc.log('Load data from : ' + url, level=xbmc.LOGINFO)
         data = extractor.load_data(url, name)
         j_str = extractor.to_json_string(data)
         with io.open(f, 'w', encoding='utf-8') as fo:
             fo.write(j_str.decode("utf8"))
     else:
-        xbmc.log('File found: ' + f, level=xbmc.LOGNOTICE)
+        xbmc.log('File found: ' + f, level=xbmc.LOGINFO)
         with io.open(f, 'r', encoding='utf-8') as fo:
             data = json.load(fo)
     return data
@@ -118,15 +118,15 @@ def list_videos(url):
 
 
 def get_play_url(url):
-    data = json.load(urllib2.urlopen(
+    data = json.load(urllib.request.urlopen(
         'https://www.lrt.lt/servisai/stream_url/vod/media_info/?url=' + url))
     return data["playlist_item"]["file"]
 
 
 def play_video(url):
-    xbmc.log("Play " + url, level=xbmc.LOGNOTICE)
+    xbmc.log("Play " + url, level=xbmc.LOGINFO)
     play_url = get_play_url(url)
-    xbmc.log("Got play URL " + play_url, level=xbmc.LOGNOTICE)
+    xbmc.log("Got play URL " + play_url, level=xbmc.LOGINFO)
     play_item = xbmcgui.ListItem(path=play_url)
     xbmcplugin.setResolvedUrl(_handle, True, listitem=play_item)
 
@@ -134,7 +134,7 @@ def play_video(url):
 def router(paramstring):
     params = dict(parse_qsl(paramstring))
     if params:
-        xbmc.log("route {0} - {1}".format(params['action'], params['url']), level=xbmc.LOGNOTICE)
+        xbmc.log("route {0} - {1}".format(params['action'], params['url']), level=xbmc.LOGINFO)
         if params['action'] == 'list':
             list_videos(params['url'])
         else:
@@ -144,7 +144,7 @@ def router(paramstring):
                 raise ValueError(
                     'Invalid paramstring: {0}!'.format(paramstring))
     else:
-        xbmc.log("no params", level=xbmc.LOGNOTICE)
+        xbmc.log("no params", level=xbmc.LOGINFO)
         list_categories()
 
 

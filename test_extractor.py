@@ -1,10 +1,6 @@
 # -*- coding: utf-8 -*-
-import io
-import json
 import sys
 import unittest
-
-from sympy.stats import std
 
 import extractor
 

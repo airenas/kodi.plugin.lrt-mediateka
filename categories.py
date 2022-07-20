@@ -38,12 +38,7 @@ statics = [
     {'name': 'Dokumentiniai filmai',
      'url': 'https://www.lrt.lt/mediateka/video/kiti/filmai/dokumentiniai-filmai',
      'genre': 'Filmai',
-     'id': 'documentary1'},
-    {'name': 'Dokumentiniai filmai - rašytojai',
-     'url': 'https://www.lrt.lt/tema/dokumentiniai-filmai-rasytojai',
-     'genre': 'Filmai',
-     'id': 'documentary2'}
-
+     'id': 'documentary1'}
 ]
 
 

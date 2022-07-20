@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import json
 import logging
-import urllib2
+import urllib.request
 
 from bs4 import BeautifulSoup
 
@@ -25,8 +25,8 @@ def extract_genre(p_html):
 def load_data(url, name):
     headers = {'Cookie': 'beget=begetok; has_js=1;',
                'User-agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_6) AppleWebKit/604.1.38 (KHTML, like Gecko) Version/11.0 Safari/604.1.38'}
-    req = urllib2.Request(url, None, headers)
-    resp = urllib2.urlopen(req)
+    req = urllib.request.Request(url, None, headers)
+    resp = urllib.request.urlopen(req)
     html = resp.read()
     soup = BeautifulSoup(html, "html.parser")
     divs = get_video_divs(soup)
@@ -78,8 +78,8 @@ def get_videos(url):
     logging.info("Loading " + url)
     headers = {'Cookie': 'beget=begetok; has_js=1;',
                'User-agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_6) AppleWebKit/604.1.38 (KHTML, like Gecko) Version/11.0 Safari/604.1.38'}
-    req = urllib2.Request(url, None, headers)
-    resp = urllib2.urlopen(req)
+    req = urllib.request.Request(url, None, headers)
+    resp = urllib.request.urlopen(req)
     html = resp.read()
     soup = BeautifulSoup(html, "html.parser")
 
@@ -123,6 +123,6 @@ def to_json_string(data):
     try:
         res = json.dumps(data, ensure_ascii=False).encode('utf8')
     except Exception as err:
-        logging.warn(err)
+        logging.error(err)
         res = json.dumps(data, ensure_ascii=True).encode('utf8')
     return res
