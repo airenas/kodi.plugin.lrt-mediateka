@@ -113,8 +113,7 @@ def get_videos(url):
 def extract_date(p_html):
     m = p_html.find('span', attrs={'class': 'info-block__text'})
     if m:
-        logging.info('Date ')
-        logging.info(m.get_text().encode('utf-8'))
+        logging.info('Date {0}'.format(m.get_text().encode('utf-8')))
         return m.get_text()
     logging.info('No date ')
     return None

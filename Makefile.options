@@ -1,6 +1,6 @@
 commit_count=$(shell git rev-list --count HEAD)
-version?=0.4.$(commit_count)
+version?=0.5.$(commit_count)
 name?=kodi.plugin.lrt-mediateka
 port?=10003
-repo_url?=https://airenas.github.io/kodi
+# repo_url?=https://airenas.github.io/kodi
 github_dir=../../../airenas.github.io/kodi
