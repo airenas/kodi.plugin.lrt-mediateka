@@ -28,6 +28,7 @@ $(repo_dir)/$(name):
 $(repo_dir)/addons.xml: ../addon.xml | $(repo_dir)
 	echo '<?xml version="1.0" encoding="UTF-8"?> <addons>' > $@
 	cat ../addon.xml | tail -n +2 >> $@
+	cat ../fix/script.module.beautifulsoup4/addon.xml | tail -n +2 >> $@
 	echo '</addons>' >> $@
 
 $(repo_dir)/addons.xml.md5: $(repo_dir)/addons.xml
@@ -52,7 +53,7 @@ run-repo: prepare-repo
 	docker run -p $(port):80 -v $(repo_dir):/usr/share/nginx/html \
 		-v $(CURDIR)/nginx.conf:/etc/nginx/conf.d/default.conf nginx:1.17.9
 prepare-deploy: $(github_dir)/addons.xml $(github_dir)/addons.xml.md5 $(github_dir)/lrt-repo-$(repo_version).zip \
-	$(github_dir)/$(name)/$(name)-$(version).zip $(repo_dir)/script.module.beautifulsoup4/script.module.beautifulsoup4-4.9.3+fix.2.zip
+	$(github_dir)/$(name)/$(name)-$(version).zip $(github_dir)/script.module.beautifulsoup4/script.module.beautifulsoup4-4.9.3+fix.2.zip
 $(github_dir)/%: $(repo_dir)/%			
 	mkdir -p `dirname $@`
 	cp $< $@
